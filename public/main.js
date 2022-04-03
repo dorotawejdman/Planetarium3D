@@ -1,50 +1,71 @@
-const canvas = document.querySelector("canvas");
-const gl = canvas.getContext("webgl");
-
-if (!gl) {
-  throw new Error("Webgl not supported");
-}
-
-alert(`Everything is fine`);
-
-const vertexData = new Float32Array([0, 1, 0, 1, -1, 0, -1, -1, 0]);
-
-const buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER, vertexData, gl.STATIC_DRAW); //DYNAMI_DRAW
-
-const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-gl.shaderSource(
-  vertexShader,
-  `
-    attribute vec3 position;
-    void main() {
-        gl_Position = vec4(position,1);
-    }
-`
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+  24,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
 );
 
-gl.compileShader(vertexShader);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
 
-const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-gl.shaderSource(
-  fragmentShader,
-  `
-void main() {
-    gl_FragColor = vec4(1,0,0,1);
-}
-`
-);
-gl.compileShader(fragmentShader);
+document.body.appendChild(renderer.domElement);
 
-const program = gl.createProgram();
-gl.attachShader(program, vertexShader);
-gl.attachShader(program, fragmentShader);
-gl.linkProgram(program);
+//Tworzenie szescianu
+const cubeColor = new THREE.Color("hsl(90, 100%,60%)");
+const cubeGeometry = new THREE.BoxGeometry(1, 2, 1);
+const cubeMaterial = new THREE.MeshPhongMaterial({
+  color: cubeColor,
+  shininess: 80,
+});
+const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+cube.position.set(-1, -2, -10);
+//Tworzenie kuli - slonca
 
-const positionLocation = gl.getAttribLocation(program, `position`);
-gl.enableVertexAttribArray(positionLocation);
-gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+const sunGeometry = new THREE.SphereGeometry(0.2, 64, 32);
+const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sunSphere = new THREE.Mesh(sunGeometry, sunMaterial);
+sunSphere.position.set(1, 1, 1);
+scene.add(sunSphere);
 
-gl.useProgram(program);
-gl.drawArrays(gl.TRIANGLES, 0, 3);
+//Tworzenie światla
+const lightColor = new THREE.Color("hsl(30, 100%, 90%)");
+const light = new THREE.PointLight(lightColor, 2);
+const light2 = new THREE.PointLight(lightColor, 2);
+light.position.z = 20;
+light.position.x = -20;
+light.position.y = -20;
+light2.position.set(20, -20, -20);
+
+const spotlight = new THREE.PointLight(0xff0000, 10, 100);
+spotlight.position.set(1, 1, 1);
+scene.add(spotlight);
+
+//Dodanie obiektow do sceny
+
+// scene.add(light);
+// scene.add(light2);
+scene.add(cube);
+
+//Ustawienie camery
+camera.position.z = 15;
+
+//Resize strony
+const handleResize = () => {
+  const { innerWidth, innerHeight } = windowrenderer.setSize(
+    innerWidth,
+    innerHeight
+  );
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix; //odswiezenie obrazu kamery
+};
+
+//Animacja
+const animate = () => {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+  cube.rotation.x += 0.01;
+  cube.rotation.z += 0.005;
+};
+
+animate();
