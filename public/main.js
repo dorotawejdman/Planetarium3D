@@ -12,24 +12,24 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 //Tworzenie szescianu
-const cubeColor = new THREE.Color("hsl(90, 100%,60%)");
+const cubeColor = new THREE.Color(0xfad36e);
 const cubeGeometry = new THREE.BoxGeometry(1, 2, 1);
 const cubeMaterial = new THREE.MeshPhongMaterial({
   color: cubeColor,
   shininess: 80,
 });
 const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-cube.position.set(-1, -2, -10);
+cube.position.set(-4, -4, -10);
 //Tworzenie kuli - slonca
 
 const sunGeometry = new THREE.SphereGeometry(0.5, 64, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xf5c23d });
 const sunSphere = new THREE.Mesh(sunGeometry, sunMaterial);
-sunSphere.position.set(1, 1, 1);
+sunSphere.position.set(0,0,0);
 scene.add(sunSphere);
 
 //Tworzenie światla
-const lightColor = new THREE.Color("hsl(30, 100%, 90%)");
+const lightColor = new THREE.Color(0xf5c23d);
 const light = new THREE.PointLight(lightColor, 2);
 const light2 = new THREE.PointLight(lightColor, 2);
 light.position.z = 20;
@@ -38,7 +38,7 @@ light.position.y = -20;
 light2.position.set(20, -20, -20);
 
 const spotlight = new THREE.PointLight(0xcccc22, 10, 50);
-spotlight.position.set(1, 1, 1);
+spotlight.position.set(0,0,0);
 scene.add(spotlight);
 
 //Dodanie obiektow do sceny
