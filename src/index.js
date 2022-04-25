@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { callNasa } from "./data.js";
 import axios from "axios";
 var data;
-axios.defaults.baseURL = "https://ssd.jpl.nasa.gov/api";
+axios.defaults.baseURL = "http://localhost:3000/";
 
 //Helpers
 const createSphere = (r = 0.1, color = 0xffffff) => {
@@ -38,29 +38,51 @@ const handleResize = () => {
 
 window.addEventListener("resize", handleResize);
 
+const planetNames = ["Earth", "Mars", "Saturn", "Mercury", "Venus", "Jupiter", "Uranus", "Neptune", "Pluto"]
 // MAIN
 //Pobranie danych
+function getIds() {
+  return axios({
+    method: "get",
+    url: "planetsIds",
+  }).catch((err)=>{
+    // console.log(err)
+  }).then((res)=>{
+    res.data.forEach(element => {
+      planetNames.forEach(planet => {
+        if(element.includes(planet+'  ')){
+          // console.log(planet,":\n",element)
+        }
+      })
+    });
+  })
+}
 
-let dataNasa;
-sessionStorage.setItem("dataNasa", dataNasa);
-const getDataFromNasa = async function () {
-  dataNasa = await callNasa();
-  console.log("DATA", +dataNasa);
-  const dataNasaNormalizeX = (+dataNasa.X / 2.5e8) * 3;
-  const dataNasaNormalizeY = (+dataNasa.Y / 2.5e8) * 3;
-  const dataNasaNormalizeZ = (+dataNasa.Z / 2.5e8) * 3;
-  console.log(dataNasaNormalizeX, dataNasaNormalizeY, dataNasaNormalizeZ);
-  sessionStorage.setItem("dataNasa", dataNasa);
 
-  let sphere1 = createSphere();
-  sphere1.position.set(
-    dataNasaNormalizeX,
-    dataNasaNormalizeY,
-    dataNasaNormalizeZ
-  );
-  scene.add(sphere1);
-};
-getDataFromNasa();
+
+
+
+// let dataNasa;
+// sessionStorage.setItem("dataNasa", dataNasa);
+// const getDataFromNasa = async function () {
+//   dataNasa = await callNasa();
+//   console.log("DATA", +dataNasa);
+//   const dataNasaNormalizeX = (+dataNasa.X / 2.5e8) * 3;
+//   const dataNasaNormalizeY = (+dataNasa.Y / 2.5e8) * 3;
+//   const dataNasaNormalizeZ = (+dataNasa.Z / 2.5e8) * 3;
+//   console.log(dataNasaNormalizeX, dataNasaNormalizeY, dataNasaNormalizeZ);
+//   sessionStorage.setItem("dataNasa", dataNasa);
+
+//   let sphere1 = createSphere();
+//   sphere1.position.set(
+//     dataNasaNormalizeX,
+//     dataNasaNormalizeY,
+//     dataNasaNormalizeZ
+//   );
+//   scene.add(sphere1);
+// };
+// getDataFromNasa();
+
 
 //Tworzenie sceny, kamery, renderera
 const scene = new THREE.Scene();
@@ -74,6 +96,42 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 handleResize();
 document.body.appendChild(renderer.domElement);
 
+
+//Calle do api
+function getPlanetPosition(planetId) {
+  return axios({
+    method: "get",
+    url: `celestialBody/${planetId}`,
+  }).catch((err)=>{
+    console.log(err)
+  }).then((res)=>{
+    let sphere1 = createSphere();
+    sphere1.position.set(
+      (+res.data.X / 2.5e8) * 3,
+      (+res.data.Y / 2.5e8) * 3,
+      (+res.data.Z / 2.5e8) * 3
+    );
+    scene.add(sphere1);
+    console.log("done", res.data.Z,     (+res.data.X / 2.5e8) * 3,
+    (+res.data.Y / 2.5e8) * 3,
+    (+res.data.Z / 2.5e8) * 3)
+  })
+}
+
+getIds().then(res=>{
+
+});
+
+
+function getPlanets() {
+  let codes =[199,299,399,499,599,699,799,899]
+  codes.forEach(planetId=>{
+    getPlanetPosition(`${planetId}`).then(res=>{
+      // console.log('planet position',res)
+    })
+  })
+}
+getPlanets();
 //Tworzenie szescianu
 const cubeColor = new THREE.Color(0xfad36e);
 const cubeGeometry = new THREE.BoxGeometry(1, 2, 1);
@@ -109,7 +167,7 @@ scene.add(spotlight);
 
 //Dodawanie tekstur
 const textureLoader = new THREE.TextureLoader();
-const normalTexture = textureLoader.load("/textures/NormalMap.png");
+// const normalTexture = textureLoader.load("/textures/NormalMap.png");
 
 //Ustawienie camery
 camera.position.z = 15;
