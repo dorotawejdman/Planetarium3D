@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getPlanetPosition, getIds } from "./planets.service.js";
 import { createPlanet, createSphere, createLight, createCube } from "./helper";
 import { planetColors } from "./constants";
@@ -26,6 +27,8 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+const controls = new OrbitControls(camera, renderer.domElement);
 handleResize();
 document.body.appendChild(renderer.domElement);
 
@@ -35,10 +38,13 @@ function getPlanets() {
   codes.forEach((planetId, i) => {
     getPlanetPosition(`${planetId}`)
       .then((res) => {
-        let sphere = createSphere(0.05, planetColors[i]);
-        sphere.position.set(res.X, res.Y, res.Z);
+        let sphere = createSphere(res.data.radius, planetColors[i]);
+        sphere.position.set(
+          res.data.position.X,
+          res.data.position.Y,
+          res.data.position.Z
+        );
         scene.add(sphere);
-        console.log("planet position", res);
       })
       .catch((err) => {
         console.log("Problem");
@@ -48,7 +54,7 @@ function getPlanets() {
 getPlanets();
 console.log(scene);
 //Tworzenie kuli - slonca
-const sun = createSphere(0.1, 0xffc838, [0, 0, 0]);
+const sun = createSphere(0.03, 0xffc838, [0, 0, 0]);
 scene.add(sun);
 
 //Tworzenie światla
@@ -56,10 +62,10 @@ const lightColor = new THREE.Color(0x829393);
 
 //Swiatlo boczne
 
-const light = createLight(lightColor, 2, 0, [0, 7, 50]);
+const light = createLight(lightColor, 1.2, 0, [0, 7, 50]);
 scene.add(light);
 
-const spotlight = createLight(0xf5c23d, 10, 50, [0, 0]);
+const spotlight = createLight(0xf5c23d, 2, 50, [0, 0]);
 scene.add(spotlight);
 
 //Dodawanie tekstur
@@ -77,7 +83,7 @@ const animate = () => {
     cube.rotation.x += 0.01;
     cube.rotation.z += 0.005;
   }
-
+  controls.update();
   // planet1.orbit.rotation.z += 0.001;
 };
 animate();
