@@ -5,7 +5,7 @@ axios.defaults.baseURL = "https://ssd.jpl.nasa.gov/api";
 const app = express();
 
 app.use(express.static("public"));
-app.use(cors())
+app.use(cors());
 app.get("/", (req, res) => {
   console.log("here");
   res.status(200).json({ message: "lol" });
@@ -28,7 +28,7 @@ app.get("/planetsIds", async (req, res) => {
 
 app.get("/celestialBody/:bodyId", async (req, res) => {
   // const bodyId = req.query.bodyId;
-  const {bodyId} = req.params;
+  const { bodyId } = req.params;
 
   console.log(bodyId);
   const apiPath = `/horizons.api?format=json&COMMAND='${bodyId}'&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTOR'&CENTER='500@10'&START_TIME='2006-01-01'&STOP_TIME='2006-01-20'&STEP_SIZE='1%20d'&QUANTITIES='1,9,20,23,24,29'&CSV_FORMAT='YES'`;
@@ -40,8 +40,8 @@ app.get("/celestialBody/:bodyId", async (req, res) => {
         console.log(error.response.status);
         console.log(error.response.headers);
       }
-    })
-    data = response.data.result.split("\n");
+    });
+    let data = response.data.result.split("\n");
 
     var index = data.indexOf("$$SOE"); // => 18
     for (let i = 0; i < 5; i++) {
