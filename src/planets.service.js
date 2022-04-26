@@ -39,31 +39,16 @@ export function getPlanetPosition(planetId) {
     method: "get",
     url: `celestialBody/${planetId}`,
   })
-    .then(
-      (res) => {
-        const maxX = 3.5e9;
-        const maxY = 3.5e9;
-        const maxZ = 3.5e9;
-        console.log(res);
-        return {
-          X: (+res.data.X / maxX) * 3,
-          Y: (+res.data.Y / maxY) * 3,
-          Z: (+res.data.Z / maxZ) * 3,
-        };
-
-        //   console.log(
-        //     planetId,
-        //     res.data,
-        //     (+res.data.X / maxX) * 3,
-        //     (+res.data.Y / maxY) * 3,
-        //     (+res.data.Z / maxZ) * 3
-        //   );
-      },
-      (error) => {
-        return error;
-        console.log("There was an error when downloading planet: ", planetId);
-      }
-    )
+    .then((res) => {
+      const maxX = 3.5e9;
+      const maxY = 3.5e9;
+      const maxZ = 3.5e9;
+      res.data.position.X = (+res.data.position.X / maxX) * 3;
+      res.data.position.Y = (+res.data.position.Y / maxY) * 3;
+      res.data.position.Z = (+res.data.position.Z / maxZ) * 3;
+      res.data.radius = +res.data.radius / 200000;
+      return res;
+    })
     .catch((err) => {
       console.log("Error", err);
     });

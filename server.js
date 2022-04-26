@@ -46,13 +46,18 @@ app.get("/celestialBody/:bodyId", async (req, res) => {
       })
       .then((response) => {
         let data = response.data.result.split("\n");
-        let dataRadiusRow = "";
+        let planetRadius = "";
         for (let i = 0; i < 20; i++) {
           if (data[i].toLowerCase().includes("vol. mean radius")) {
-            dataRadiusRow = data[i].split("  ");
+            const id = data[i].indexOf("=");
+            planetRadius = data[i].slice(id, id + 15);
+            planetRadius = planetRadius
+              .split(" ")
+              .join("")
+              .split("+")[0]
+              .split("=")[1];
           }
         }
-        console.log(data.slice(0, 10), dataRadiusRow);
         var index = data.indexOf("$$SOE"); // => 18
         for (let i = 0; i < 5; i++) {
           var firstDayVec = data[index + 2 + 4 * i].split(","); //next is 2+4
@@ -61,8 +66,8 @@ app.get("/celestialBody/:bodyId", async (req, res) => {
           firstDayVecXYZ.Y = firstDayVec[3];
           firstDayVecXYZ.Z = firstDayVec[4];
         }
-        console.log(firstDayVecXYZ);
-        res.json(firstDayVecXYZ);
+        console.log({ position: firstDayVecXYZ, radius: +planetRadius });
+        res.json({ position: firstDayVecXYZ, radius: +planetRadius });
       });
   } catch (err) {
     console.log(err);

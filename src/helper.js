@@ -8,7 +8,7 @@ export const createPlanet = (r = 0.4, color = 0xffffff) => {
 
 //Helpers
 export const createSphere = (
-  r = 0.1,
+  r = 0.01,
   color = 0xffffff,
   position = [0, 0, 0]
 ) => {
