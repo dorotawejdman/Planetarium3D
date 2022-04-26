@@ -4,12 +4,13 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx webpack && npx serve dist -p 4200"
+    "start": "webpack serve --mode development --config ./webpack.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.1",
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "three": "^0.139.2"
   },
