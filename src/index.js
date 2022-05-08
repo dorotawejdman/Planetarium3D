@@ -5,6 +5,23 @@ import { createPlanet, createSphere, createLight, createCube } from "./helper";
 import { planetColors } from "./constants";
 getIds().then((res) => {});
 
+// Arrow keys controls
+const handleMovement = (event) => {
+  if (event.key === "ArrowUp") {
+    camera.position.y += 3;
+  }
+  if (event.key === "ArrowDown") {
+    camera.position.y -= 3;
+  }
+  if (event.key === "ArrowRight") {
+    camera.position.x += 3;
+  }
+  if (event.key === "ArrowLeft") {
+    camera.position.x -= 3;
+  }
+};
+document.addEventListener("keydown", handleMovement);
+
 //Resize strony
 const handleResize = () => {
   const innerHeight = window.innerHeight;
@@ -52,21 +69,21 @@ function getPlanets() {
   });
 }
 getPlanets();
-console.log(scene);
+
 //Tworzenie kuli - slonca
-const sun = createSphere(0.03, 0xffc838, [0, 0, 0]);
+const sun = createSphere(0.02, 0xffc838, [0, 0, 0]);
+const sunCentrum = createSphere(0.03, 0xffc838, [0, 0, 0], "starMat");
 scene.add(sun);
+scene.add(sunCentrum);
+//Slonce
+const spotlight = createLight(0xf5c23d, 2, 50, [0, 0]);
+scene.add(spotlight);
 
 //Tworzenie światla
 const lightColor = new THREE.Color(0x829393);
-
 //Swiatlo boczne
-
 const light = createLight(lightColor, 1.2, 0, [0, 7, 50]);
 scene.add(light);
-
-const spotlight = createLight(0xf5c23d, 2, 50, [0, 0]);
-scene.add(spotlight);
 
 //Dodawanie tekstur
 const textureLoader = new THREE.TextureLoader();

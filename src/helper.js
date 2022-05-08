@@ -10,12 +10,22 @@ export const createPlanet = (r = 0.4, color = 0xffffff) => {
 export const createSphere = (
   r = 0.01,
   color = 0xffffff,
-  position = [0, 0, 0]
+  position = [0, 0, 0],
+  material = "planetMat"
 ) => {
-  const sphereMat = new THREE.MeshPhongMaterial({
+  let sphereMat = new THREE.MeshPhongMaterial({
     color,
-    shininess: 50,
+    shininess: 20,
   });
+
+  if (material === "starMat") {
+    sphereMat = new THREE.MeshBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0.5,
+    });
+  }
+
   const sphereGeometry = new THREE.SphereGeometry(r, 50, 50);
   const sphere = new THREE.Mesh(sphereGeometry, sphereMat);
   sphere.position.set(...position);
