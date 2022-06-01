@@ -22,7 +22,7 @@ export const createSphere = (
     sphereMat = new THREE.MeshBasicMaterial({
       color,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.2,
     });
   }
 

@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getPlanetPosition, getIds } from "./planets.service.js";
 import { createPlanet, createSphere, createLight, createCube } from "./helper";
-import { planetColors } from "./constants";
+import { planetColors, constants } from "./constants";
+
 getIds().then((res) => {});
 
 // Arrow keys controls
@@ -38,10 +39,10 @@ window.addEventListener("resize", handleResize);
 //Tworzenie sceny, kamery, renderera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-  24,
+  24, // Camera frustum vertical field of view. From bottom to top of view, in degrees. Default is 50.
   window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+  0.1, // Camera frustum near plane.
+  1000 // Camera frustum far plane.
 );
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
@@ -71,8 +72,14 @@ function getPlanets() {
 getPlanets();
 
 //Tworzenie kuli - slonca
-const sun = createSphere(0.02, 0xffc838, [0, 0, 0]);
-const sunCentrum = createSphere(0.03, 0xffc838, [0, 0, 0], "starMat");
+const sunRadiusNormal = 70000 / constants.radiusModifier;
+const sun = createSphere(0.03, 0xffc838, [0, 0, 0]);
+const sunCentrum = createSphere(
+  sunRadiusNormal,
+  0xffc838,
+  [0, 0, 0],
+  "starMat"
+);
 scene.add(sun);
 scene.add(sunCentrum);
 //Slonce
