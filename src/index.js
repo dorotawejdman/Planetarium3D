@@ -3,6 +3,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getPlanetPosition, getIds } from "./planets.service.js";
 import { createPlanet, createSphere, createLight, createCube } from "./helper";
 import { planetColors } from "./constants";
+
+
 getIds().then((res) => {});
 
 // Arrow keys controls
@@ -49,10 +51,10 @@ const controls = new OrbitControls(camera, renderer.domElement);
 handleResize();
 document.body.appendChild(renderer.domElement);
 
-
-
+const planets = {}
+let codes = [199, 299, 399, 499, 599, 699, 799, 899]
 async function getPlanets() {
-  let codes = [199, 299, 399, 499, 599, 699, 799, 899]
+  
   for (let item of codes) {  
     const i = codes.indexOf(item)
     const res = await getPlanetPosition(`${item}`)
@@ -63,6 +65,8 @@ async function getPlanets() {
         res.data.position.Y,
         res.data.position.Z
         );
+        planets[item] = sphere
+        console.log(planets)
       scene.add(sphere);
     }
   }
@@ -79,11 +83,18 @@ scene.add(sunCentrum);
 const spotlight = createLight(0xf5c23d, 2, 50, [0, 0]);
 scene.add(spotlight);
 
+
+
+
+
+
 //Tworzenie światla
 const lightColor = new THREE.Color(0x829393);
 //Swiatlo boczne
 const light = createLight(lightColor, 1.2, 0, [0, 7, 50]);
-scene.add(light);
+// scene.add(light);
+const lightGlobal = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( lightGlobal );
 
 //Dodawanie tekstur
 const textureLoader = new THREE.TextureLoader();
@@ -93,14 +104,25 @@ const textureLoader = new THREE.TextureLoader();
 camera.position.z = 15;
 
 //Animacja
+const localStorage = window.localStorage
+let count= 0;
 const animate = () => {
+  
+  // console.log(JSON.parse(localStorage.getItem(planetId)))
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   if (global.cube) {
     cube.rotation.x += 0.01;
     cube.rotation.z += 0.005;
   }
+  for (let code of codes) {  
+    console.log(...Object.values((JSON.parse(localStorage.getItem(code)))[count]));
+    console.log(planets)
+    planets[code].position.set(...Object.values((JSON.parse(localStorage.getItem(code)))[count]))
+  }
+  
   controls.update();
   // planet1.orbit.rotation.z += 0.001;
+  count+=1
 };
 animate();

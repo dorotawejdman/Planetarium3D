@@ -1,5 +1,6 @@
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:3000/";
+const localstorage = window.localStorage;
 
 const planetNames = [
   "Earth",
@@ -23,6 +24,7 @@ export function getIds() {
       // console.log(err)
     })
     .then((res) => {
+      localstorage.setItem('planetsIDs', res.data)
       res.data.forEach((element) => {
         planetNames.forEach((planet) => {
           if (element.includes(planet + "  ")) {
@@ -40,6 +42,8 @@ export function getPlanetPosition(planetId) {
     url: `celestialBody/${planetId}`,
   })
     .then((res) => {
+      localstorage.setItem(planetId, JSON.stringify(res.data.position))
+      
       const maxX = 3.5e9;
       const maxY = 3.5e9;
       const maxZ = 3.5e9;

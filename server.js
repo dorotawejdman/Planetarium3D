@@ -31,7 +31,7 @@ app.get("/celestialBody/:bodyId", async (req, res) => {
   const { bodyId } = req.params;
 
   console.log(bodyId);
-  const apiPath = `/horizons.api?format=json&COMMAND='${bodyId}'&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTOR'&CENTER='500@10'&START_TIME='2006-01-01'&STOP_TIME='2006-01-20'&STEP_SIZE='1%20d'&QUANTITIES='1,9,20,23,24,29'&CSV_FORMAT='YES'`;
+  const apiPath = `/horizons.api?format=json&COMMAND='${bodyId}'&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTOR'&CENTER='500@10'&START_TIME='2006-01-01'&STOP_TIME='2006-01-20'&STEP_SIZE='1 DAYS'&QUANTITIES='1,9,20,23,24,29'&CSV_FORMAT='YES'`;
 
   try {
     await axios
@@ -59,15 +59,21 @@ app.get("/celestialBody/:bodyId", async (req, res) => {
           }
         }
         var index = data.indexOf("$$SOE"); // => 18
-        for (let i = 0; i < 5; i++) {
-          var firstDayVec = data[index + 2 + 4 * i].split(","); //next is 2+4
+          console.log(bodyId,'\n', data.slice(index, index+42), '\n', data[index+1])
+        const positionVector = []
+        for (let i = 0; i < 10; i++) {
+          var firstDayVec = data[index + 2 + i].split(","); //next is 2+4
           var firstDayVecXYZ = {};
-          firstDayVecXYZ.X = firstDayVec[2];
-          firstDayVecXYZ.Y = firstDayVec[3];
-          firstDayVecXYZ.Z = firstDayVec[4];
+          console.log(firstDayVec)
+          firstDayVecXYZ.X = +firstDayVec[2];
+          firstDayVecXYZ.Y = +firstDayVec[3];
+          firstDayVecXYZ.Z = +firstDayVec[4];
+          positionVector.push(firstDayVecXYZ)
+          
         }
-        console.log({ position: firstDayVecXYZ, radius: +planetRadius });
-        res.json({ position: firstDayVecXYZ, radius: +planetRadius });
+        console.log('position:', positionVector)
+        // console.log({ position: firstDayVecXYZ, radius: +planetRadius });
+        res.json({ position: positionVector, radius: +planetRadius });
       });
   } catch (err) {
     console.log(err);
