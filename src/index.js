@@ -50,26 +50,26 @@ const controls = new OrbitControls(camera, renderer.domElement);
 handleResize();
 document.body.appendChild(renderer.domElement);
 
-// Pobranie pozycji planet i usytuowanie ich na scenie
-function getPlanets() {
-  let codes = [199, 299, 399, 499, 599, 699, 799, 899];
-  codes.forEach((planetId, i) => {
-    getPlanetPosition(`${planetId}`)
-      .then((res) => {
-        let sphere = createSphere(res.data.radius, planetColors[i]);
-        sphere.position.set(
-          res.data.position.X,
-          res.data.position.Y,
-          res.data.position.Z
+
+
+async function getPlanets() {
+  let codes = [199, 299, 399, 499, 599, 699, 799, 899]
+  for (let item of codes) {  
+    const i = codes.indexOf(item)
+    const res = await getPlanetPosition(`${item}`)
+    if (res) {
+      let sphere = createSphere(res.data.radius, planetColors[i]);
+      sphere.position.set(
+        res.data.position.X,
+        res.data.position.Y,
+        res.data.position.Z
         );
-        scene.add(sphere);
-      })
-      .catch((err) => {
-        console.log("Problem");
-      });
-  });
+      scene.add(sphere);
+    }
+  }
 }
-getPlanets();
+getPlanets()
+
 
 //Tworzenie kuli - slonca
 const sunRadiusNormal = 70000 / constants.radiusModifier;
