@@ -1,4 +1,5 @@
 import axios from "axios";
+import { constants } from "./constants";
 axios.defaults.baseURL = "http://localhost:3000/";
 const localstorage = window.localStorage;
 
@@ -24,7 +25,7 @@ export function getIds() {
       // console.log(err)
     })
     .then((res) => {
-      localstorage.setItem('planetsIDs', res.data)
+      localstorage.setItem("planetsIDs", res.data);
       res.data.forEach((element) => {
         planetNames.forEach((planet) => {
           if (element.includes(planet + "  ")) {
@@ -42,15 +43,15 @@ export function getPlanetPosition(planetId) {
     url: `celestialBody/${planetId}`,
   })
     .then((res) => {
-      localstorage.setItem(planetId, JSON.stringify(res.data.position))
-      
-      const maxX = 3.5e9;
-      const maxY = 3.5e9;
-      const maxZ = 3.5e9;
-      res.data.position.X = (+res.data.position.X / maxX) * 3;
-      res.data.position.Y = (+res.data.position.Y / maxY) * 3;
-      res.data.position.Z = (+res.data.position.Z / maxZ) * 3;
-      res.data.radius = +res.data.radius / 200000;
+      localstorage.setItem(planetId, JSON.stringify(res.data.position));
+
+      res.data.position.X =
+        (+res.data.position.X / constants.distanceModifier.x) * 3;
+      res.data.position.Y =
+        (+res.data.position.Y / constants.distanceModifier.y) * 3;
+      res.data.position.Z =
+        (+res.data.position.Z / constants.distanceModifier.z) * 3;
+      res.data.radius = +res.data.radius / constants.radiusModifier;
       return res;
     })
     .catch((err) => {
