@@ -31,7 +31,7 @@ app.get("/celestialBody/:bodyId", async (req, res) => {
   const { bodyId } = req.params;
 
   console.log(bodyId);
-  const apiPath = `/horizons.api?format=json&COMMAND='${bodyId}'&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTOR'&CENTER='500@10'&START_TIME='2006-01-01'&STOP_TIME='2006-01-20'&STEP_SIZE='1 DAYS'&QUANTITIES='1,9,20,23,24,29'&CSV_FORMAT='YES'`;
+  const apiPath = `/horizons.api?format=json&COMMAND='${bodyId}'&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTOR'&CENTER='500@10'&START_TIME='2006-01-01'&STOP_TIME='2007-09-20'&STEP_SIZE='30 DAYS'&QUANTITIES='1,9,20,23,24,29'&CSV_FORMAT='YES'`;
 
   try {
     await axios

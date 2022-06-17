@@ -50,9 +50,14 @@ export function getPlanetPosition(planetId) {
     url: `celestialBody/${planetId}`,
   })
     .then((res) => {
+   
+
+      res.data.position.map(pos => {
+        normalizePosition(pos)});
+      res.data.radius = res.data.radius/constants.radiusModifier
       localstorage.setItem(planetId, JSON.stringify(res.data.position));
 
-      res.data.position = normalizePosition(res.data.position);
+      console.log(planetId,'\n ',res.data)
       return res;
     })
     .catch((err) => {

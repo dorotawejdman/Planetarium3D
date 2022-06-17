@@ -10,9 +10,9 @@ export const planetColors = [
   "#c123ff",
 ];
 
-const distanceMod = 3.5e9;
+const distanceMod = 3.5e8;
 export const constants = {
-  radiusModifier: 500000,
+  radiusModifier: 50000,
   distanceModifier: {
     x: distanceMod,
     y: distanceMod,
