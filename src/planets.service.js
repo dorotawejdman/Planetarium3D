@@ -36,6 +36,13 @@ export function getIds() {
     });
 }
 
+export function normalizePosition(position) {
+  position.Z = (+position.Z / constants.distanceModifier.z) * 3;
+  position.Y = (+position.Y / constants.distanceModifier.y) * 3;
+  position.X = (+position.X / constants.distanceModifier.x) * 3;
+  return position;
+}
+
 //Calle do api
 export function getPlanetPosition(planetId) {
   return axios({
@@ -45,13 +52,7 @@ export function getPlanetPosition(planetId) {
     .then((res) => {
       localstorage.setItem(planetId, JSON.stringify(res.data.position));
 
-      res.data.position.X =
-        (+res.data.position.X / constants.distanceModifier.x) * 3;
-      res.data.position.Y =
-        (+res.data.position.Y / constants.distanceModifier.y) * 3;
-      res.data.position.Z =
-        (+res.data.position.Z / constants.distanceModifier.z) * 3;
-      res.data.radius = +res.data.radius / constants.radiusModifier;
+      res.data.position = normalizePosition(res.data.position);
       return res;
     })
     .catch((err) => {

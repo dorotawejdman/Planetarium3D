@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { getPlanetPosition, getIds } from "./planets.service.js";
+import {
+  getPlanetPosition,
+  getIds,
+  normalizePosition,
+} from "./planets.service.js";
 import { createPlanet, createSphere, createLight, createCube } from "./helper";
 import { planetColors, constants } from "./constants";
 
@@ -70,6 +74,7 @@ async function getPlanets() {
   }
 }
 getPlanets();
+console.log(planets);
 
 //Tworzenie kuli - slonca
 const sunRadiusNormal = 70000 / constants.radiusModifier;
@@ -106,24 +111,27 @@ const localStorage = window.localStorage;
 let count = 0;
 const animate = () => {
   // console.log(JSON.parse(localStorage.getItem(planetId)))
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-  if (global.cube) {
-    cube.rotation.x += 0.01;
-    cube.rotation.z += 0.005;
-  }
-  for (let code of codes) {
-    console.log(
-      ...Object.values(JSON.parse(localStorage.getItem(code))[count])
-    );
-    console.log(planets);
-    planets[code].position.set(
-      ...Object.values(JSON.parse(localStorage.getItem(code))[count])
-    );
+  if (count < 100) {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+    if (global.cube) {
+      cube.rotation.x += 0.01;
+      cube.rotation.z += 0.005;
+    }
+    for (let code of codes) {
+      console.log(
+        normalizePosition(JSON.parse(localStorage.getItem(code))[count])
+      );
+      console.log(planets);
+      planets[code].position.set(
+        ...Object.values(JSON.parse(localStorage.getItem(code))[count])
+      );
+    }
+
+    controls.update();
+    // planet1.orbit.rotation.z += 0.001;
   }
 
-  controls.update();
-  // planet1.orbit.rotation.z += 0.001;
   count += 1;
 };
 animate();
