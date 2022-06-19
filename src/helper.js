@@ -2,7 +2,16 @@ import * as THREE from "three";
 
 //Dodawanie tekstur
 const textureLoader = new THREE.TextureLoader();
-const normalTexture = textureLoader.load("textures/NormalMap.png");
+// const normalTexture = textureLoader.load("textures/mercury.jpg");
+let textures = [];
+textures.push(textureLoader.load("textures/mercury.jpg"));
+textures.push(textureLoader.load("textures/venus.jpg"));
+textures.push(textureLoader.load("textures/earth.jpg"));
+textures.push(textureLoader.load("textures/mars.jpg"));
+textures.push(textureLoader.load("textures/jupiter.jpg"));
+textures.push(textureLoader.load("textures/saturn.jpg"));
+textures.push(textureLoader.load("textures/uranus.jpg"));
+textures.push(textureLoader.load("textures/neptune.jpg"));
 
 export const createPlanet = (r = 0.4, color = 0xffffff) => {
   const sphere = createSphere(r, color);
@@ -16,12 +25,14 @@ export const createSphere = (
   r = 0.01,
   color = 0xffffff,
   position = [0, 0, 0],
-  material = "planetMat"
+  material = "planetMat",
+  textureId = null
 ) => {
+  console.log("create sphere", textures[textureId], textureId);
   let sphereMat = new THREE.MeshPhongMaterial({
     color,
     shininess: 20,
-    normalMap: normalTexture,
+    // map: normalTexture,
   });
 
   if (material === "starMat") {
@@ -29,6 +40,12 @@ export const createSphere = (
       color,
       transparent: true,
       opacity: 0.2,
+    });
+  }
+
+  if (material === "textured") {
+    sphereMat = new THREE.MeshPhongMaterial({
+      map: textures[textureId],
     });
   }
 

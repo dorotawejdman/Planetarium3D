@@ -79,18 +79,19 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
     const i = codes.indexOf(item);
     const res = await getPlanetPosition(`${item}`, startDate, stopDate, step);
     if (res) {
-      let sphere = createSphere(res.data.radius, planetColors[i]);
-      sphere.position.set(
-        res.data.position.X,
-        res.data.position.Y,
-        res.data.position.Z
+      console.log("   item[0]", Math.floor(item / 100) - 1);
+      let sphere = createSphere(
+        res.data.radius,
+        planetColors[i],
+        [res.data.position.X, res.data.position.Y, res.data.position.Z],
+        "textured", //planetMat/starMat
+        Math.floor(item / 100) - 1
       );
       planets[item] = sphere;
 
       scene.add(sphere);
     }
   }
-  console.log(planets);
   return planets;
 }
 
@@ -166,7 +167,9 @@ let planets;
 // let params = new Parameters();
 
 function main() {
-  // getIds().then((res) => {});
+  getIds().then((res) => {
+    console.log(res);
+  });
 
   createSunAndLights(scene);
   const localStorage = window.localStorage;
@@ -178,16 +181,13 @@ var sleepTime = 0;
 // const counter = document.getElementsByClassName("count");
 // console.log(counter);
 const animate = () => {
-  console.log(JSON.parse(localStorage.getItem("199")).length);
   if (count < JSON.parse(localStorage.getItem("199")).length) {
-    console.log("is less");
     document.getElementsByClassName("count").innerHTML = "" + count;
-    console.log(document.getElementsByClassName("count").innerHTML);
+    // console.log(document.getElementsByClassName("count").innerHTML);
 
     sleep(+sleepTime);
     for (let code of codes) {
       setTimeout(() => {
-        console.log(code, count, JSON.parse(localStorage.getItem(code))[count]);
         if (JSON.parse(localStorage.getItem(code))[count]) {
           planets[code].position.set(
             ...Object.values(JSON.parse(localStorage.getItem(code))[count])
@@ -195,12 +195,9 @@ const animate = () => {
         }
       }, 0);
     }
-    console.log(count, scene, " scene\n", scene.children[6].position);
+    // console.log(count, scene, " scene\n", scene.children[6].position);
     count += 1;
   } else {
-    console.log("cancel");
-
-    console.log(window.Animation);
   }
   anim = requestAnimationFrame(animate);
   renderer.render(scene, camera);

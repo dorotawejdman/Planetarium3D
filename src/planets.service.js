@@ -4,12 +4,12 @@ axios.defaults.baseURL = "http://localhost:3000/";
 const localstorage = window.localStorage;
 
 const planetNames = [
-  "Earth",
-  "Mars",
-  "Saturn",
   "Mercury",
   "Venus",
+  "Earth",
+  "Mars",
   "Jupiter",
+  "Saturn",
   "Uranus",
   "Neptune",
   "Pluto",
