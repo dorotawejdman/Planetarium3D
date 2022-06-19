@@ -44,20 +44,24 @@ export function normalizePosition(position) {
 }
 
 //Calle do api
-export function getPlanetPosition(planetId) {
+export function getPlanetPosition(
+  planetId,
+  startDate = "2006-01-01",
+  stopDate = "2006-02-20",
+  step = "1 DAYS"
+) {
   return axios({
     method: "get",
-    url: `celestialBody/${planetId}`,
+    url: `celestialBody/${planetId}/${startDate}/${stopDate}/${step}`,
   })
     .then((res) => {
-   
-
-      res.data.position.map(pos => {
-        normalizePosition(pos)});
-      res.data.radius = res.data.radius/constants.radiusModifier
+      res.data.position.map((pos) => {
+        normalizePosition(pos);
+      });
+      res.data.radius = res.data.radius / constants.radiusModifier;
       localstorage.setItem(planetId, JSON.stringify(res.data.position));
 
-      console.log(planetId,'\n ',res.data)
+      console.log(planetId, "\n ", res.data);
       return res;
     })
     .catch((err) => {

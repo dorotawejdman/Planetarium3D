@@ -4,18 +4,87 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <title>Document</title>
     <style>
       body {
         background-color: rgb(4, 10, 19);
         overflow: hidden;
+        text-align: center;
+      }
+      .planet-parameters {
+        position: absolute;
+        left: 50%;
+        top: 70px;
+        z-index: 500;
+        height: auto;
+        width: 500px;
+        background-color: rgba(78, 70, 70, 0.4);
+        padding: 10px;
+        border-radius: 5px;
+        transform: translateX(-50%);
+      }
+      label {
+        color: whitesmoke;
+        margin: 10px 5px;
+      }
+      h1 {
+        color: white;
+        text-align: center;
+        margin: 10px;
+      }
+      h2 {
+        color: rgb(190, 181, 181);
+        font-size: 1.6rem;
+        text-align: center;
+        margin: 5px;
+      }
+      .count {
+        color: white
       }
     </style>
   </head>
 
   <body>
+    <h1>PLANETARIUM</h1>
+    <div class="planet-parameters">
+      <h2>Enter params</h1>
+      <form
+        onsubmit="return false"
+        class="d-flex justify-content-between"
+        id="planetsForm"
+      >
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" name="startDate" id="startDate" value="2022-02-04"/>
+          <label for="stopDate">Stop Date</label>
+          <input type="date" name="stopDate" id="stopDate" value="2022-06-09"/>
+          <label for="step">Step</label>
+          <select name="step" id="step">
+            <option value="1 DAY" selected="selected">1 DAY</option>
+            <option value="7 DAYS">7 DAYS</option>
+            <option value="1 HOUR">1 HOUR</option>
+          </select>
+          <label for="speed">Speed</label>
+          <select name="speed" id="speed">
+            <option value="500">slow</option>
+            <option value="200">medium</option>
+            <option value="0" selected="selected">fast</option>
+          </select>
+          <button type="submit" class="btn btn-info">Send</button>
+        </div>
+      </form>
+      <button class="btn btn-primary" id="restartBtn">Restart</button>
+      <button class="btn btn-danger" id="cancelBtn">Cancel</button>
+      <span class="count">0</span>
+    </div>
     <!-- <button onclick="getPlanets()">get</button> -->
-    <script src="bundle.js"></script>
+    <script src="bundle.js" defer></script>
     <!-- <script src="Test1.js" defer></script> -->
   </body>
 </html>
