@@ -10,6 +10,10 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600&display=swap" rel="stylesheet">
     <title>Document</title>
     <style>
       body {
@@ -17,6 +21,10 @@
         background-image: url(textures/stars.jpg);
         overflow: hidden;
         text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-family: 'Raleway', sans-serif;
+        color: rgb(194, 181, 181);
+
       }
       .planet-parameters {
         position: absolute;
@@ -35,18 +43,49 @@
         margin: 10px 5px;
       }
       h1 {
-        color: white;
+        color: rgb(194, 181, 181);
         text-align: center;
         margin: 10px;
+        font-weight: 400;
       }
       h2 {
         color: rgb(190, 181, 181);
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         text-align: center;
         margin: 5px;
       }
       .count {
-        color: white
+        color: white;
+        position: absolute;
+        left: 20px;
+        bottom:5px;
+        font-size: 1.5rem;
+      }
+      .hide-icon{
+        position: absolute;
+        bottom: 6px;
+        right: 10px;
+        z-index: 1000;
+        font-size: 30px;
+        cursor: pointer;
+      }
+      .btn {
+        border: none;
+        padding: 5px 16px;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+      .btn-primary{
+        background-color: #038b85; 
+        /* rgb(44, 78, 78); */
+      }
+      .btn-danger{
+        background-color: #a50e48;
+        /* rgb(78, 27, 47); */
+      }
+      .btn-info{
+        background-color: #6a00cc;
+        /* rgb(27, 109, 129); */
       }
     </style>
   </head>
@@ -54,38 +93,48 @@
   <body>
     <h1>PLANETARIUM</h1>
     <div class="planet-parameters">
-      <h2>Enter params</h1>
-      <form
-        onsubmit="return false"
-        class="d-flex justify-content-between"
-        id="planetsForm"
-      >
-        <div class="form-group">
-          <label for="startDate">Start Date</label>
-          <input type="date" name="startDate" id="startDate" value="2022-02-04"/>
-          <label for="stopDate">Stop Date</label>
-          <input type="date" name="stopDate" id="stopDate" value="2022-06-09"/>
-          <label for="step">Step</label>
-          <select name="step" id="step">
-            <option value="1 DAY" selected="selected">1 DAY</option>
-            <option value="7 DAYS">7 DAYS</option>
-            <option value="1 HOUR">1 HOUR</option>
-          </select>
-          <label for="speed">Speed</label>
-          <select name="speed" id="speed">
-            <option value="500">slow</option>
-            <option value="200">medium</option>
-            <option value="0" selected="selected">fast</option>
-          </select>
-          <button type="submit" class="btn btn-info">Send</button>
-        </div>
-      </form>
+      <div id="paramsContainer">
+
+        <h2>Parameters</h1>
+        <form
+          onsubmit="return false"
+          class="d-flex justify-content-between"
+          id="planetsForm"
+        >
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" name="startDate" id="startDate" value="2022-02-04"/>
+            <label for="stopDate">Stop Date</label>
+            <input type="date" name="stopDate" id="stopDate" value="2022-06-09"/>
+            <label for="step">Step</label>
+            <select name="step" id="step">
+              <option value="1 DAY" selected="selected">1 Day</option>
+              <option value="7 DAYS">7 Days</option>
+              <option value="1 HOUR">1 Hour</option>
+            </select>
+            <label for="speed">Speed</label>
+            <select name="speed" id="speed">
+              <option value="500">slow</option>
+              <option value="200">medium</option>
+              <option value="0" selected="selected">fast</option>
+            </select>
+            <button type="submit" class="btn btn-info">Send</button>
+          </div>
+        </form>
+      </div>
       <button class="btn btn-primary" id="restartBtn">Restart</button>
       <button class="btn btn-danger" id="cancelBtn">Cancel</button>
-      <span class="count">0</span>
+     
+      <div class="hide-icon" onclick="toggleView()">&#8691;</div>
     </div>
+    <span class="count">0</span>
     <!-- <button onclick="getPlanets()">get</button> -->
     <script src="bundle.js" defer></script>
+    <script>
+      function toggleView() {
+        document.getElementById('paramsContainer').classList.toggle('d-none')
+      }
+    </script>
     <!-- <script src="Test1.js" defer></script> -->
   </body>
 </html>
