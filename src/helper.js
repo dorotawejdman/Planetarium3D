@@ -1,4 +1,9 @@
 import * as THREE from "three";
+
+//Dodawanie tekstur
+const textureLoader = new THREE.TextureLoader();
+const normalTexture = textureLoader.load("textures/NormalMap.png");
+
 export const createPlanet = (r = 0.4, color = 0xffffff) => {
   const sphere = createSphere(r, color);
   const orbit = new THREE.Object3D();
@@ -16,6 +21,7 @@ export const createSphere = (
   let sphereMat = new THREE.MeshPhongMaterial({
     color,
     shininess: 20,
+    normalMap: normalTexture,
   });
 
   if (material === "starMat") {

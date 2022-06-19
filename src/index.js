@@ -170,10 +170,6 @@ function main() {
 
   createSunAndLights(scene);
   const localStorage = window.localStorage;
-
-  //Dodawanie tekstur
-  // const textureLoader = new THREE.TextureLoader();
-  // const normalTexture = textureLoader.load("/textures/NormalMap.png");
 }
 
 var count = 0;
