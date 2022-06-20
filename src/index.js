@@ -2,7 +2,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getPlanetPosition } from "./planets.service.js";
 import { createSphere, createLight, customMaterial } from "./helper";
-import { planetColors, constants } from "./constants";
+import {
+  planetColors,
+  constants,
+  stepInHours,
+  planetRotationTime,
+} from "./constants";
 
 const cleanScene = (scene) => {
   while (scene.children.length > 0) {
@@ -112,20 +117,7 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
       );
       const localstorage = window.localStorage;
       localstorage.setItem("normal" + item, JSON.stringify(plane.normal));
-
-      // var planeGeometry = new THREE.PlaneGeometry(100, 100);
-
-      // var coplanarPoint = plane.normal();
       console.log(plane.normal);
-      // planeGeometry.lookAt(plane.normal);
-
-      // var plane2 = new THREE.Mesh(
-      //   planeGeometry,
-      //   new THREE.MeshBasicMaterial({
-      //     color: 0x0000ff,
-      //   })
-      // );
-      // scene.add(plane2);
     }
   }
   return planets;
