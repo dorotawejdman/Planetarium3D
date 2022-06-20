@@ -24,7 +24,7 @@ export const planetRotationTime = {
 };
 
 export const stepInHours = {
-  "1 dAY": 24 * h,
+  "1 DAY": 24 * h,
   "1 HOUR": h,
   "7 DAYS": 7 * 24 * h,
 };

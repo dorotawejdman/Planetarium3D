@@ -60,8 +60,11 @@ export function getPlanetPosition(
       });
       res.data.radius = res.data.radius / constants.radiusModifier;
       localstorage.setItem(planetId, JSON.stringify(res.data.position));
-      localstorage.setItem('radius'+planetId, JSON.stringify(res.data.radius));
-      console.log(planetId, "\n ", res.data);
+      localstorage.setItem(
+        "radius" + planetId,
+        JSON.stringify(res.data.radius)
+      );
+      localstorage.setItem("step", step);
       return res;
     })
     .catch((err) => {

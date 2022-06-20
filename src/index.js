@@ -198,14 +198,6 @@ var count = 0;
 var anim;
 var sleepTime = 0;
 
-function rotateAroundObjectAxis(object, axis, radians) {
-  const rotObjectMatrix = new THREE.Matrix4();
-  rotObjectMatrix.makeRotationAxis(axis, radians);
-  object.matrix.multiply(rotObjectMatrix);
-  console.log(axis.normalize(), rotObjectMatrix, object.rotation);
-  object.rotation.setFromRotationMatrix(object.matrix);
-}
-
 const animate = () => {
   if (count < JSON.parse(localStorage.getItem("199")).length) {
     document.getElementsByClassName("count").innerHTML = "" + count;
@@ -220,8 +212,11 @@ const animate = () => {
           var xAxis = new THREE.Vector3(
             ...Object.values(JSON.parse(localStorage.getItem("normal" + code)))
           );
-          console.log(planets[code].rotation);
-          planets[code].rotateOnAxis(xAxis, Math.PI / 10);
+          let step = window.localStorage.getItem("step");
+          let angle =
+            2 * Math.PI * (stepInHours[step] / planetRotationTime[code]);
+          console.log(step, angle, stepInHours, planetRotationTime[code]);
+          planets[code].rotateOnAxis(xAxis, angle);
         }
       }, 0);
     }
