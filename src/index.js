@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import {
   getPlanetPosition,
   getIds,
@@ -8,6 +11,7 @@ import {
 import { createPlanet, createSphere, createLight, createCube } from "./helper";
 import { planetColors, constants } from "./constants";
 import { Parameters } from "./parameters";
+
 
 const cleanScene = (scene) => {
   while (scene.children.length > 0) {
@@ -37,6 +41,29 @@ let sendForm = (event) => {
 form.addEventListener("submit", sendForm);
 document.getElementById("restartBtn").addEventListener("click", () => {
   count = 0;
+  if(!planets) {
+    main();
+    planets = {}
+    for (let item of codes) {
+      let position = Object.values(JSON.parse(localStorage.getItem(item))[0])
+      let radius = localStorage.getItem('radius'+item)
+      console.log(position, radius)
+      let sphere = createSphere(
+        +radius,
+        'fx000000',
+        [position.X, position.Y, position.Z],
+        "textured", //planetMat/starMat
+        Math.floor(item / 100) - 1
+      );
+      planets[item] = sphere;
+      scene.add(sphere);
+    }
+    console.log(planets)
+    animate();
+    console.log(scene)
+  }
+
+
   console.log("restart");
 });
 document.getElementById("cancelBtn").addEventListener("click", () => {
@@ -109,14 +136,16 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
 function createSunAndLights(scene) {
   //Tworzenie kuli - slonca
   const sunRadiusNormal = 70000 / constants.radiusModifier;
-  const sun = createSphere(0.03, 0xffc838, [0, 0, 0]);
+  // const sun = createSphere(0.03, 0xffc838, [0, 0, 0]);
   const sunCentrum = createSphere(
-    sunRadiusNormal,
+    0.2,
     0xffc838,
     [0, 0, 0],
-    "starMat"
+    "starMat", //planetMat/starMat
+    8
   );
-  scene.add(sun);
+  sunCentrum.layers.set(1);
+  // scene.add(sun);
   scene.add(sunCentrum);
   //Slonce
   const spotlight = createLight(0xf5c23d, 2, 50, [0, 0]);
@@ -151,6 +180,7 @@ var camera = new THREE.PerspectiveCamera(
 camera.position.z = 15;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.autoClear = false;
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -166,10 +196,28 @@ let planets;
 
 // let params = new Parameters();
 
+/////////////////////////////////BLOOM
+const renderScene = new RenderPass(scene, camera);
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  1.5,
+  0.4,
+  0.85
+);
+bloomPass.threshold = 0;
+bloomPass.strength = 10; //intensity of glow
+bloomPass.radius = 1;
+const bloomComposer = new EffectComposer(renderer);
+bloomComposer.setSize(window.innerWidth, window.innerHeight);
+bloomComposer.renderToScreen = true;
+bloomComposer.addPass(renderScene);
+bloomComposer.addPass(bloomPass);
+///////////////////////////////
+
 function main() {
-  getIds().then((res) => {
-    console.log(res);
-  });
+  // getIds().then((res) => {
+  //   console.log(res);
+  // });
 
   createSunAndLights(scene);
   const localStorage = window.localStorage;
@@ -200,7 +248,21 @@ const animate = () => {
   } else {
   }
   anim = requestAnimationFrame(animate);
+
+  renderer.clear();
+  
+  camera.layers.set(1);
+  bloomComposer.render();
+  
+  // renderer.clearDepth();
+  camera.layers.set(0);
   renderer.render(scene, camera);
+
+  // renderer.render(scene, camera);
+  // camera.layers.set(1);
+  // bloomComposer.render();
+  // camera.layers.set(0);
+  // renderer.render(scene, camera);
   controls.update();
   console.log("animate");
 
