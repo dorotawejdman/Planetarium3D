@@ -1,17 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import {
-  getPlanetPosition,
-  getIds,
-  normalizePosition,
-} from "./planets.service.js";
-import { createPlanet, createSphere, createLight, createCube } from "./helper";
+import { getPlanetPosition } from "./planets.service.js";
+import { createSphere, createLight } from "./helper";
 import { planetColors, constants } from "./constants";
-import { Parameters } from "./parameters";
-
 
 const cleanScene = (scene) => {
   while (scene.children.length > 0) {
@@ -20,13 +11,12 @@ const cleanScene = (scene) => {
   renderer.render(scene, camera);
 };
 
-var form = document.getElementById("planetsForm");
-let sendForm = (event) => {
+const sendForm = (event) => {
   count = 0;
   cleanScene(scene);
   const formData = new FormData(event.target);
   event.preventDefault();
-  main();
+  createSunAndLights(scene);
   let startDate = formData.get("startDate");
   let stopDate = formData.get("stopDate");
   let step = formData.get("step");
@@ -34,23 +24,20 @@ let sendForm = (event) => {
   getPlanets(codes, scene, startDate, stopDate, step).then((response) => {
     planets = response;
     animate();
-    //Animacja
   });
-  console.log(formData, event.target, formData.get("startDate"));
 };
-form.addEventListener("submit", sendForm);
-document.getElementById("restartBtn").addEventListener("click", () => {
+
+const restartAnimation = () => {
   count = 0;
-  if(!planets) {
-    main();
-    planets = {}
+  if (!planets) {
+    createSunAndLights(scene);
+    planets = {};
     for (let item of codes) {
-      let position = Object.values(JSON.parse(localStorage.getItem(item))[0])
-      let radius = localStorage.getItem('radius'+item)
-      console.log(position, radius)
+      let position = Object.values(JSON.parse(localStorage.getItem(item))[0]);
+      let radius = localStorage.getItem("radius" + item);
       let sphere = createSphere(
         +radius,
-        'fx000000',
+        "fx000000",
         [position.X, position.Y, position.Z],
         "textured", //planetMat/starMat
         Math.floor(item / 100) - 1
@@ -58,21 +45,18 @@ document.getElementById("restartBtn").addEventListener("click", () => {
       planets[item] = sphere;
       scene.add(sphere);
     }
-    console.log(planets)
     animate();
-    console.log(scene)
   }
-
-
   console.log("restart");
-});
-document.getElementById("cancelBtn").addEventListener("click", () => {
+};
+
+const cancelAnimation = () => {
   window.cancelAnimationFrame(anim);
+  cleanScene(scene);
   count = 0;
   console.log("cancel");
-  cleanScene(scene);
-});
-//
+};
+
 // Arrow keys controls
 const handleMovement = (event, camera) => {
   if (event.key === "ArrowUp") {
@@ -122,17 +106,6 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
   return planets;
 }
 
-// const animate = () => {
-//   // console.log(JSON.parse(localStorage.getItem(planetId)))
-
-//   requestAnimationFrame(animate);
-
-//   renderer.render(scene, camera);
-
-//   // planet1.orbit.rotation.z += 0.001;
-
-// };
-
 function createSunAndLights(scene) {
   //Tworzenie kuli - slonca
   const sunRadiusNormal = 70000 / constants.radiusModifier;
@@ -144,7 +117,6 @@ function createSunAndLights(scene) {
     "starMat", //planetMat/starMat
     8
   );
-  sunCentrum.layers.set(1);
   // scene.add(sun);
   scene.add(sunCentrum);
   //Slonce
@@ -185,53 +157,34 @@ document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
+// Event listenery
+var form = document.getElementById("planetsForm");
+form.addEventListener("submit", sendForm);
+
+document
+  .getElementById("restartBtn")
+  .addEventListener("click", restartAnimation);
+
+document.getElementById("cancelBtn").addEventListener("click", cancelAnimation);
+
 document.addEventListener("keydown", handleMovement, camera);
+
 window.addEventListener("resize", () => {
   handleResize(renderer, camera);
 });
+
 handleResize(renderer, camera);
+
+//GLOBAL variables
 let codes = [199, 299, 399, 499, 599, 699, 799, 899];
-
 let planets;
-
-// let params = new Parameters();
-
-/////////////////////////////////BLOOM
-const renderScene = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(
-  new THREE.Vector2(window.innerWidth, window.innerHeight),
-  1.5,
-  0.4,
-  0.85
-);
-bloomPass.threshold = 0;
-bloomPass.strength = 10; //intensity of glow
-bloomPass.radius = 1;
-const bloomComposer = new EffectComposer(renderer);
-bloomComposer.setSize(window.innerWidth, window.innerHeight);
-bloomComposer.renderToScreen = true;
-bloomComposer.addPass(renderScene);
-bloomComposer.addPass(bloomPass);
-///////////////////////////////
-
-function main() {
-  // getIds().then((res) => {
-  //   console.log(res);
-  // });
-
-  createSunAndLights(scene);
-  const localStorage = window.localStorage;
-}
-
 var count = 0;
 var anim;
 var sleepTime = 0;
-// const counter = document.getElementsByClassName("count");
-// console.log(counter);
+
 const animate = () => {
   if (count < JSON.parse(localStorage.getItem("199")).length) {
     document.getElementsByClassName("count").innerHTML = "" + count;
-    // console.log(document.getElementsByClassName("count").innerHTML);
 
     sleep(+sleepTime);
     for (let code of codes) {
@@ -243,26 +196,12 @@ const animate = () => {
         }
       }, 0);
     }
-    // console.log(count, scene, " scene\n", scene.children[6].position);
     count += 1;
   } else {
   }
   anim = requestAnimationFrame(animate);
 
-  renderer.clear();
-  
-  camera.layers.set(1);
-  bloomComposer.render();
-  
-  // renderer.clearDepth();
-  camera.layers.set(0);
   renderer.render(scene, camera);
-
-  // renderer.render(scene, camera);
-  // camera.layers.set(1);
-  // bloomComposer.render();
-  // camera.layers.set(0);
-  // renderer.render(scene, camera);
   controls.update();
   console.log("animate");
 

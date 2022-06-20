@@ -29,7 +29,6 @@ export const createSphere = (
   material = "planetMat",
   textureId = null
 ) => {
-  console.log("create sphere", textures[textureId], textureId);
   let sphereMat = new THREE.MeshPhongMaterial({
     color,
     shininess: 20,
@@ -39,11 +38,11 @@ export const createSphere = (
   if (material === "starMat") {
     sphereMat = new THREE.MeshBasicMaterial({
       color,
-      transparent: true,
-      opacity: 0.2,
+      // transparent: true,
+      // opacity: 0.2,
     });
-    if(textureId) {
-      sphereMat.map = textures[textureId]
+    if (textureId) {
+      sphereMat.map = textures[textureId];
     }
   }
 
