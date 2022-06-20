@@ -12,6 +12,7 @@ textures.push(textureLoader.load("textures/jupiter.jpg"));
 textures.push(textureLoader.load("textures/saturn.jpg"));
 textures.push(textureLoader.load("textures/uranus.jpg"));
 textures.push(textureLoader.load("textures/neptune.jpg"));
+textures.push(textureLoader.load("textures/sun.jpg"));
 
 export const createPlanet = (r = 0.4, color = 0xffffff) => {
   const sphere = createSphere(r, color);
@@ -41,6 +42,9 @@ export const createSphere = (
       transparent: true,
       opacity: 0.2,
     });
+    if(textureId) {
+      sphereMat.map = textures[textureId]
+    }
   }
 
   if (material === "textured") {
