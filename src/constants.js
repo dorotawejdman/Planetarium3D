@@ -10,6 +10,25 @@ export const planetColors = [
   "#c123ff",
 ];
 
+var d = 24,
+  h = 1;
+export const planetRotationTime = {
+  199: 58 * d + 16 * h,
+  299: 243 * d,
+  399: 24 * h,
+  499: 24 * h,
+  599: 10 * h,
+  699: 10 * h,
+  799: 17 * h,
+  899: 16 * h,
+};
+
+export const stepInHours = {
+  "1 dAY": 24 * h,
+  "1 HOUR": h,
+  "7 DAYS": 7 * 24 * h,
+};
+
 const distanceMod = 3.5e8;
 export const constants = {
   radiusModifier: 50000,
