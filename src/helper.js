@@ -14,6 +14,15 @@ textures.push(textureLoader.load("textures/uranus.jpg"));
 textures.push(textureLoader.load("textures/neptune.jpg"));
 textures.push(textureLoader.load("textures/sun.jpg"));
 
+export const customMaterial = new THREE.ShaderMaterial({
+  uniforms: {},
+  vertexShader: document.getElementById("vertexShader").textContent,
+  fragmentShader: document.getElementById("fragmentShader").textContent,
+  side: THREE.BackSide,
+  blending: THREE.AdditiveBlending,
+  transparent: true,
+});
+
 export const createPlanet = (r = 0.4, color = 0xffffff) => {
   const sphere = createSphere(r, color);
   const orbit = new THREE.Object3D();

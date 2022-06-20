@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getPlanetPosition } from "./planets.service.js";
-import { createSphere, createLight } from "./helper";
+import { createSphere, createLight, customMaterial } from "./helper";
 import { planetColors, constants } from "./constants";
 
 const cleanScene = (scene) => {
@@ -109,18 +109,19 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
 function createSunAndLights(scene) {
   //Tworzenie kuli - slonca
   const sunRadiusNormal = 70000 / constants.radiusModifier;
-  // const sun = createSphere(0.03, 0xffc838, [0, 0, 0]);
+  const sun = createSphere(0.5, 0xffc838, [0, 0, 0]);
   const sunCentrum = createSphere(
     0.2,
-    0xffc838,
+    0xffdf98,
     [0, 0, 0],
     "starMat", //planetMat/starMat
     8
   );
-  // scene.add(sun);
+  sun.material = customMaterial;
+  scene.add(sun);
   scene.add(sunCentrum);
   //Slonce
-  const spotlight = createLight(0xf5c23d, 2, 50, [0, 0]);
+  const spotlight = createLight(0xffdf98, 1, 50, [0, 0]);
   scene.add(spotlight);
 
   //Tworzenie światla
@@ -149,7 +150,7 @@ var camera = new THREE.PerspectiveCamera(
   1000 // Camera frustum far plane.
 );
 //Ustawienie camery
-camera.position.z = 15;
+camera.position.z = 1;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.autoClear = false;

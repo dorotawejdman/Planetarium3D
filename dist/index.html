@@ -135,6 +135,26 @@
     </div>
     <span class="count">0</span>
     <!-- <button onclick="getPlanets()">get</button> -->
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      varying vec3 vNormal;
+      void main() 
+      {
+          vNormal = normalize( normalMatrix * normal );
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      }
+      </script>
+      
+      <!-- fragment shader a.k.a. pixel shader -->
+      <script id="fragmentShader" type="x-shader/x-vertex"> 
+      varying vec3 vNormal;
+      void main() 
+      {
+        float intensity = pow( 0.1 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 2.0 ); 
+          gl_FragColor = vec4( 0.7,0.4,0.0, 1.0 ) * intensity;
+      }
+      </script>
+
     <script src="bundle.js" defer></script>
     <script>
       function toggleView() {
