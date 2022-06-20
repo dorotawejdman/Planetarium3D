@@ -12,8 +12,7 @@ const cleanScene = (scene) => {
 };
 
 const sendForm = (event) => {
-  count = 0;
-  cleanScene(scene);
+  cancelAnimation();
   const formData = new FormData(event.target);
   event.preventDefault();
   createSunAndLights(scene);
@@ -28,6 +27,8 @@ const sendForm = (event) => {
 };
 
 const restartAnimation = () => {
+  sleepTime = document.getElementById("speed").value;
+
   count = 0;
   if (!planets) {
     createSunAndLights(scene);
@@ -54,6 +55,7 @@ const cancelAnimation = () => {
   window.cancelAnimationFrame(anim);
   cleanScene(scene);
   count = 0;
+  planets = null;
   console.log("cancel");
 };
 
@@ -90,7 +92,6 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
     const i = codes.indexOf(item);
     const res = await getPlanetPosition(`${item}`, startDate, stopDate, step);
     if (res) {
-      console.log("   item[0]", Math.floor(item / 100) - 1);
       let sphere = createSphere(
         res.data.radius,
         planetColors[i],
@@ -99,8 +100,32 @@ async function getPlanets(codes, scene, startDate, stopDate, step) {
         Math.floor(item / 100) - 1
       );
       planets[item] = sphere;
-
       scene.add(sphere);
+
+      //ADD plane
+      console.log(res.data.position[0]);
+      var mathPlane = new THREE.Plane();
+      const plane = mathPlane.setFromCoplanarPoints(
+        new THREE.Vector3(...Object.values(res.data.position[0])),
+        new THREE.Vector3(...Object.values(res.data.position[1])),
+        new THREE.Vector3(...Object.values(res.data.position[2]))
+      );
+      const localstorage = window.localStorage;
+      localstorage.setItem("normal" + item, JSON.stringify(plane.normal));
+
+      // var planeGeometry = new THREE.PlaneGeometry(100, 100);
+
+      // var coplanarPoint = plane.normal();
+      console.log(plane.normal);
+      // planeGeometry.lookAt(plane.normal);
+
+      // var plane2 = new THREE.Mesh(
+      //   planeGeometry,
+      //   new THREE.MeshBasicMaterial({
+      //     color: 0x0000ff,
+      //   })
+      // );
+      // scene.add(plane2);
     }
   }
   return planets;
@@ -126,10 +151,8 @@ function createSunAndLights(scene) {
 
   //Tworzenie światla
   const lightColor = new THREE.Color(0x829393);
-  //Swiatlo boczne
-  const light = createLight(lightColor, 1.2, 0, [0, 7, 50]);
-  // scene.add(light);
-  const lightGlobal = new THREE.AmbientLight(0x404040); // soft white light
+  //Swiatlo globalne
+  const lightGlobal = new THREE.AmbientLight(0x202020); // soft white light
   scene.add(lightGlobal);
 }
 
@@ -150,7 +173,7 @@ var camera = new THREE.PerspectiveCamera(
   1000 // Camera frustum far plane.
 );
 //Ustawienie camery
-camera.position.z = 1;
+camera.position.z = 15;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.autoClear = false;
@@ -183,6 +206,14 @@ var count = 0;
 var anim;
 var sleepTime = 0;
 
+function rotateAroundObjectAxis(object, axis, radians) {
+  const rotObjectMatrix = new THREE.Matrix4();
+  rotObjectMatrix.makeRotationAxis(axis, radians);
+  object.matrix.multiply(rotObjectMatrix);
+  console.log(axis.normalize(), rotObjectMatrix, object.rotation);
+  object.rotation.setFromRotationMatrix(object.matrix);
+}
+
 const animate = () => {
   if (count < JSON.parse(localStorage.getItem("199")).length) {
     document.getElementsByClassName("count").innerHTML = "" + count;
@@ -190,10 +221,15 @@ const animate = () => {
     sleep(+sleepTime);
     for (let code of codes) {
       setTimeout(() => {
-        if (JSON.parse(localStorage.getItem(code))[count]) {
+        if (JSON.parse(localStorage.getItem(code))[count] && planets) {
           planets[code].position.set(
             ...Object.values(JSON.parse(localStorage.getItem(code))[count])
           );
+          var xAxis = new THREE.Vector3(
+            ...Object.values(JSON.parse(localStorage.getItem("normal" + code)))
+          );
+          console.log(planets[code].rotation);
+          planets[code].rotateOnAxis(xAxis, Math.PI / 10);
         }
       }, 0);
     }

@@ -10,10 +10,16 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600&display=swap"
+      rel="stylesheet"
+    />
     <title>Document</title>
     <style>
       body {
@@ -21,10 +27,9 @@
         background-image: url(textures/stars.jpg);
         overflow: hidden;
         text-align: center;
-        font-family: 'Montserrat', sans-serif;
-        font-family: 'Raleway', sans-serif;
+        font-family: "Montserrat", sans-serif;
+        font-family: "Raleway", sans-serif;
         color: rgb(194, 181, 181);
-
       }
       .planet-parameters {
         position: absolute;
@@ -32,7 +37,7 @@
         top: 70px;
         z-index: 500;
         height: auto;
-        width: 500px;
+        width: 700px;
         background-color: rgba(78, 70, 70, 0.4);
         padding: 10px;
         border-radius: 5px;
@@ -58,10 +63,10 @@
         color: white;
         position: absolute;
         left: 20px;
-        bottom:5px;
+        bottom: 5px;
         font-size: 1.5rem;
       }
-      .hide-icon{
+      .hide-icon {
         position: absolute;
         bottom: 6px;
         right: 10px;
@@ -75,23 +80,28 @@
         margin-left: 5px;
         margin-right: 5px;
       }
-      .btn:hover{
-        background-color: black; 
+      .btn:hover {
+        background-color: black;
       }
-      .btn-primary{
-        background-color: #c7009c; 
+      .btn-primary {
+        background-color: #c7009c;
         /* rgb(44, 78, 78); */
       }
-      .btn-danger{
+      .btn-danger {
         background-color: #b90047;
         /* rgb(78, 27, 47); */
       }
-      .btn-info{
+      .btn-info {
         background-color: #e78b00;
         /* rgb(27, 109, 129); */
       }
       input[type="date"] {
         width: 150px;
+      }
+      input,
+      select {
+        height: 27px;
+        margin-right: 10px;
       }
     </style>
   </head>
@@ -100,37 +110,50 @@
     <h1>PLANETARIUM</h1>
     <div class="planet-parameters">
       <div id="paramsContainer">
-
-        <h2>Parameters</h1>
-        <form
-          onsubmit="return false"
-          class="d-flex justify-content-between"
-          id="planetsForm"
-        >
-          <div class="form-group">
-            <label for="startDate">Start Date</label>
-            <input type="date" name="startDate" id="startDate" value="2022-02-04"/>
-            <label for="stopDate">Stop Date</label>
-            <input type="date" name="stopDate" id="stopDate" value="2022-06-09"/>
+        <h2>Data Parameters</h2>
+        <form onsubmit="return false" id="planetsForm">
+          <div
+            class="form-group"
+            class="d-flex justify-content-center align-items-center"
+          >
+            <label for="startDate">Start</label>
+            <input
+              type="date"
+              name="startDate"
+              id="startDate"
+              value="2022-02-04"
+            />
+            <label for="stopDate">Stop</label>
+            <input
+              type="date"
+              name="stopDate"
+              id="stopDate"
+              value="2022-06-09"
+            />
             <label for="step">Step</label>
             <select name="step" id="step">
               <option value="1 DAY" selected="selected">1 Day</option>
               <option value="7 DAYS">7 Days</option>
               <option value="1 HOUR">1 Hour</option>
             </select>
-            <label for="speed">Speed</label>
-            <select name="speed" id="speed">
-              <option value="500">slow</option>
-              <option value="200">medium</option>
-              <option value="0" selected="selected">fast</option>
-            </select>
             <button type="submit" class="btn btn-info">Send</button>
           </div>
         </form>
+        <h2>Animation Parameters</h2>
       </div>
-      <button class="btn btn-primary" id="restartBtn">Restart</button>
-      <button class="btn btn-danger" id="cancelBtn">Cancel</button>
-     
+
+      <div class="d-flex justify-content-center align-items-center">
+        <div style="margin-right: 20px">
+          <label for="speed">Speed</label>
+          <select name="speed" id="speed">
+            <option value="500">slow</option>
+            <option value="200">medium</option>
+            <option value="0" selected="selected">fast</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="restartBtn">Restart</button>
+        <button class="btn btn-danger" id="cancelBtn">Cancel</button>
+      </div>
       <div class="hide-icon" onclick="toggleView()">&#8691;</div>
     </div>
     <span class="count">0</span>
@@ -138,27 +161,27 @@
 
     <script id="vertexShader" type="x-shader/x-vertex">
       varying vec3 vNormal;
-      void main() 
+      void main()
       {
           vNormal = normalize( normalMatrix * normal );
           gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
       }
-      </script>
-      
-      <!-- fragment shader a.k.a. pixel shader -->
-      <script id="fragmentShader" type="x-shader/x-vertex"> 
+    </script>
+
+    <!-- fragment shader a.k.a. pixel shader -->
+    <script id="fragmentShader" type="x-shader/x-vertex">
       varying vec3 vNormal;
-      void main() 
+      void main()
       {
-        float intensity = pow( 0.1 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 2.0 ); 
+        float intensity = pow( 0.1 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 2.0 );
           gl_FragColor = vec4( 0.7,0.4,0.0, 1.0 ) * intensity;
       }
-      </script>
+    </script>
 
     <script src="bundle.js" defer></script>
     <script>
       function toggleView() {
-        document.getElementById('paramsContainer').classList.toggle('d-none')
+        document.getElementById("paramsContainer").classList.toggle("d-none");
       }
     </script>
     <!-- <script src="Test1.js" defer></script> -->
